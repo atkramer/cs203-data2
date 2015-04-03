@@ -1,27 +1,33 @@
-public class Branch<T extends Comparable> implements FiniteSet<T> {
+public class Branch<T extends Comparable> implements Bag<T> {
 
     T data;
-    FiniteSet left;
-    FiniteSet right;
+    int multiplicity;
+    Bag<T> left;
+    Bag<T> right;
     
     //Constructor for Branch. Takes an int for the value of the tree
-    //at the point, and two FiniteSets for the left and right branches of the tree
-    public Branch(FiniteSet left, T data, FiniteSet right) {
+    //at the point, and two Bags for the left and right branches of the tree
+    public Branch(Bag<T> left, T data, int multiplicity, Bag<T> right) {
 	this.left = left;
 	this.right = right;
 	this.data = data;
-    }
-
-    public int cardinality() {
-	return 1 + left.cardinality() + right.cardinality();
+	this.multiplicity = multiplicity;
     }
 
     public boolean isEmptyHuh() {
 	return false;
     }
 
+    public int cardinality() {
+	return this.multiplicity + left.cardinality() + right.cardinality();
+    }
+    
+    public int numDistinctElts() {
+	return 1 + left.numDistinctElts() + right.numDistinctElts();
+    }
+
     public boolean member(T elt) {
-	if(elt.compareTo(data) == 0) {
+	if(elt.compareTo(data) == 0 && this.multiplicity != 0) {
 	    return true;
 	} else if(elt.compareTo(data) < 0) {
 	    return left.member(elt);
@@ -30,49 +36,48 @@ public class Branch<T extends Comparable> implements FiniteSet<T> {
 	}
     }
 
-    public FiniteSet add(T elt) {
+    public Bag<T> add(T elt, int n) {
 	if(elt.compareTo(data) == 0) {
-	    return this; 
+	    return new Branch<T>(left, elt, multiplicity + n, right);
 	} else if(elt.compareTo(data) < 0) {
-	    return new Branch(left.add(elt), data, right);
+	    return new Branch<T>(left.add(elt, n), data, multiplicity, right);
 	} else {
-	    return new Branch(left, data, right.add(elt));
-	}
+	    return new Branch<T>(left, data, multiplicity, right.add(elt, n));
+	} 
     }
     
-    @Override
-    public FiniteSet remove(T elt) {
+    public Bag<T> remove(T elt, int n) {
 	if(elt.compareTo(data) < 0) {
-	    return new Branch(left.remove(elt), data, right);
+	    return new Branch<T>(left.remove(elt, n), data, multiplicity, right);
 	} else if(elt.compareTo(data) > 0) {
-	    return new Branch(left, data, right.remove(elt));
+	    return new Branch<T>(left, data, multiplicity, right.remove(elt, n));
 	} else {
-	    return left.union(right);
+	    return new Branch<T>(left, data, Math.max(multiplicity - n, 0), right);
 	}
     }
 
-    public FiniteSet union(FiniteSet u) {
+    public Bag<T> union(Bag<T> u) {
 	return u.union(left).union(right).add(data);	
     }
 
-    public FiniteSet inter(FiniteSet u) {
+    public Bag<T> inter(Bag<T> u) {
 	if(u.member(data)) {
-	    return new Branch(left.inter(u), data, right.inter(u));
+	    return new Branch<T>(left.inter(u), data, right.inter(u));
 	} else {
 	    return left.union(right).inter(u);
 	}
     }
     
-    public FiniteSet diff(FiniteSet u) {
+    public Bag<T> diff(Bag<T> u) {
 	return left.union(right).diff(u.remove(data));
     }
 
-    public boolean equal(FiniteSet u) {
+    public boolean equal(Bag<T> u) {
 	return this.subset(u) && u.subset(this);
     }
     
     
-    public boolean subset(FiniteSet u) {
+    public boolean subset(Bag<T> u) {
 	return u.member(data) && left.subset(u) && right.subset(u);
     }
 
