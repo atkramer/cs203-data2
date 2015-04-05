@@ -46,6 +46,18 @@ public class Branch<T extends Comparable> implements Bag<T> {
 	}
     }
 
+    private Branch<T> rotateLeft() {
+	Branch<T> bRight = (Branch<T>) this.right;
+	return new Branch<T>(bRight.right, bRight.data, bRight.multiplicity,
+			     new Branch<T>(this.left, this.data, this.multiplicity, bRight.left));
+    }
+
+    private Branch<T> rotateRight() {
+	Branch<T> bLeft = (Branch<T>) this.left;
+	return new Branch<T>(bLeft.left, bLeft.data, bLeft.multiplicity,
+			     new Branch<T>(bLeft.right, this.data, this.multiplicity, this.right));
+    }
+
     public Bag<T> add(T elt, int n) {
 	if(elt.compareTo(data) == 0) {
 	    return new Branch<T>(left, elt, multiplicity + n, right);
