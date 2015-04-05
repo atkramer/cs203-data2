@@ -36,6 +36,16 @@ public class Branch<T extends Comparable> implements Bag<T> {
 	}
     }
 
+    public int multiplicity(T elt)  {
+	if(elt.compareTo(data) == 0) {
+	    return this.multiplicity;
+	} else if(elt.compareTo(data) < 0) {
+	    return left.multiplicity(elt);
+	} else {
+	    return right.multiplicity(elt);
+	}
+    }
+
     public Bag<T> add(T elt, int n) {
 	if(elt.compareTo(data) == 0) {
 	    return new Branch<T>(left, elt, multiplicity + n, right);
@@ -57,33 +67,46 @@ public class Branch<T extends Comparable> implements Bag<T> {
     }
 
     public Bag<T> union(Bag<T> u) {
-	return u.union(left).union(right).add(data);	
+	return u.union(left).union(right).add(data, multiplicity);	
     }
 
     public Bag<T> inter(Bag<T> u) {
 	if(u.member(data)) {
-	    return new Branch<T>(left.inter(u), data, right.inter(u));
+	    return new Branch<T>(left.inter(u), data, Math.min(multiplicity, u.multiplicity(data)), right.inter(u));
 	} else {
-	    return left.union(right).inter(u);
+		return left.inter(u).union(right.inter(u));
 	}
     }
     
     public Bag<T> diff(Bag<T> u) {
-	return left.union(right).diff(u.remove(data));
+	return left.union(right).diff(u.remove(data, multiplicity));
     }
 
     public boolean equal(Bag<T> u) {
 	return this.subset(u) && u.subset(this);
     }
     
-    
     public boolean subset(Bag<T> u) {
-	return u.member(data) && left.subset(u) && right.subset(u);
+	return (multiplicity == u.multiplicity(data)) && left.subset(u) && right.subset(u);
     }
 
     public String toString() {
-	return  "{" + data + left.toString() +
+	return  "{(" + data + ":" + multiplicity + ")" + left.toString() +
 	    right.toString() + "}";
     }
+    
+    public T here() { 
+	return data;
+    }
 
+    public boolean notEmpty() {
+	return true;
+    }
+
+    public Sequence<T> next() {
+	//TO DO: Probably needs to be changed, since sequencing is supposed
+	//       to make accessing items cheap (pay as you go), and union is
+	//       a fairly expensive operation to complete
+	return left.union(right);
+    }
 } 

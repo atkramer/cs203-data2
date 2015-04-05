@@ -1,4 +1,4 @@
-public interface Bag<T extends Comparable> {
+public interface Bag<T extends Comparable> extends Sequence<T>{
 
     /**
      * Determines if a Bag is empty
