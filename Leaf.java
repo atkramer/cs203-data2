@@ -30,7 +30,7 @@ public class Leaf<T extends Comparable> implements Bag<T> {
     }
 
     public Bag<T> add(T elt, int n) {
-	return new Branch<T>(this, elt, n, this);
+	return new Branch<T>(this, 0, elt, n, this, 0);
     }
 
     public Bag<T> remove(T elt, int n) {
@@ -61,16 +61,7 @@ public class Leaf<T extends Comparable> implements Bag<T> {
 	return "";
     }
 
-    public T here() {
-	throw new EmptySequenceException("No elements in an empty sequence");
+    public Sequence<T> seq() {
+	return new EmptySequence();
     }
-
-    public boolean notEmpty() {
-	return false;
-    }
-    
-    public Sequence<T> next() {
-	return this;
-    }
-
 }
