@@ -19,7 +19,11 @@ public class Branch<T extends Comparable> implements Bag<T>, Sequence {
     }
 
     public boolean isEmptyHuh() {
-	return false;
+        if(multiplicity > 0) {
+	    return true;
+	} else {
+	    return left.isEmptyHuh() || right.isEmptyHuh();
+	}
     }
 
     public int cardinality() {
@@ -27,7 +31,11 @@ public class Branch<T extends Comparable> implements Bag<T>, Sequence {
     }
     
     public int numDistinctElts() {
-	return 1 + left.numDistinctElts() + right.numDistinctElts();
+	if(multiplicity != 0) {
+	    return 1 + left.numDistinctElts() + right.numDistinctElts();
+	} else {
+	    return left.numDistinctElts() + right.numDistinctElts();
+	}
     }
 
     public boolean member(T elt) {
@@ -131,8 +139,12 @@ public class Branch<T extends Comparable> implements Bag<T>, Sequence {
 	}
     }
 
+    public Bag<T> sum(Bag<T> u) {
+	return u.sum(left).sum(right).add(data, multiplicity);	
+    }
+
     public Bag<T> union(Bag<T> u) {
-	return u.union(left).union(right).add(data, multiplicity);	
+	return u.union(left).union(right).add(data, Math.max(this.multiplicity - u.multiplicity(data), 0));
     }
 
     public Bag<T> inter(Bag<T> u) {
@@ -144,7 +156,8 @@ public class Branch<T extends Comparable> implements Bag<T>, Sequence {
     }
     
     public Bag<T> diff(Bag<T> u) {
-	return left.union(right).diff(u.remove(data, multiplicity));
+	Bag<T> newU = u.remove(data, multiplicity);
+	return left.diff(newU).inter(right.diff(newU));
     }
 
     public boolean equal(Bag<T> u) {
@@ -156,8 +169,12 @@ public class Branch<T extends Comparable> implements Bag<T>, Sequence {
     }
 
     public String toString() {
-	return  "{(" + data + ":" + multiplicity + ")" + left.toString() +
-	    right.toString() + "}";
+	if(multiplicity > 0) {
+	    return  "{(" + data + ":" + multiplicity + ")" + left.toString() +
+		right.toString() + "}";
+	} else {
+	    return "";
+	}
     }
 
     public Sequence<T> seq() {

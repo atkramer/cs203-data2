@@ -35,7 +35,11 @@ public class Leaf<T extends Comparable> implements Bag<T> {
 
     public Bag<T> remove(T elt, int n) {
     	return this;
-    }    
+    }
+
+    public Bag<T> sum(Bag<T> u) {
+	return u;
+    }
 
     public Bag<T> union(Bag<T> u) {
 	return u;

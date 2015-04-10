@@ -4,26 +4,26 @@ public interface Bag<T extends Comparable> extends Sequenceable<T>{
      * Determines if a Bag is empty
      * @return true if the Bag is empty, false otherwise
      */
-    boolean isEmptyHuh();
+    public boolean isEmptyHuh();
 
     /**
      * Returns the number of elements in this Bag
      * @return An int representing the number of elements are in the Bag
      */
-    int cardinality();
+    public int cardinality();
     
     /**
      * Returns the number of distinct elements in this Bag
      * @return An int representing the number of unique elements in this
      */
-    int numDistinctElts();
+    public int numDistinctElts();
   
     /**
      * Determines if a particular element is a member of a Bag
      * @param elt an element of type T to check for in the Bag
      * @return true if the Bag contains elt, false otherwise
      */
-    boolean member(T elt);
+    public boolean member(T elt);
 
     /**
      * Returns the number of times an element appears in this Bag
@@ -31,7 +31,7 @@ public interface Bag<T extends Comparable> extends Sequenceable<T>{
      * @return An int representing the number of times elt appears in
      *         this Bag
      */
-    int multiplicity(T elt);
+    public int multiplicity(T elt);
 
     /**
      * Adds n copies of an element to a Bag.
@@ -39,7 +39,7 @@ public interface Bag<T extends Comparable> extends Sequenceable<T>{
      * @param n The number of occurences of elt to add
      * @return A new Bag that contains all the old members plus elt
      */
-    Bag<T> add(T elt, int n);
+    public Bag<T> add(T elt, int n);
 
     /**
      * Removes n copies of an elt from a Bag
@@ -48,15 +48,23 @@ public interface Bag<T extends Comparable> extends Sequenceable<T>{
      * @return A new Bag that contains all the elements of the old Bag
      *         with n instances of elt removed
      */
-    Bag<T> remove(T elt, int n);
+    public Bag<T> remove(T elt, int n);
 
     /**
-     * Finds the union of two Bags
+     * Finds the sum of two Bags
      * @param u A Bag
      * @return A new Bag that contains all the elements of both the 
      *         Bag it is called on and u
      */
-    Bag<T> union(Bag<T> u);
+    public Bag<T> sum(Bag<T> u);
+
+    /**
+     * Finds the union of two Bags
+     * @param u a Bag
+     * @return A new Bag that, for each element a in this or u, contains the
+     *         maximum multiplicity of a in this and u
+     */
+    public Bag<T> union(Bag<T> u);
 
     /**
      * Finds the intersection of two Bags
@@ -65,16 +73,16 @@ public interface Bag<T extends Comparable> extends Sequenceable<T>{
      *         this and u, and the multiplicity of each of these elements is equal to
      *         the minimum of its multiplicity in each of the two sets
      */
-    Bag<T> inter(Bag<T> u);
+    public Bag<T> inter(Bag<T> u);
 
     /**
      * Determines the difference between two Bags
      * @param u A Bag
-     * @return A new Bag containing each element of u n times, where n
-     *         is equal to the multiplicity of n in u minus the multiplicity of
-     *         n in this Bag
+     * @return A new Bag containing each element a in u n times, where n
+     *         is equal to the multiplicity of a in u minus the multiplicity of
+     *         a in this Bag
      */
-    Bag<T> diff(Bag<T> u);
+    public Bag<T> diff(Bag<T> u);
 
     /**
      * Determines if two Bags contain the same elements.
@@ -84,7 +92,7 @@ public interface Bag<T extends Comparable> extends Sequenceable<T>{
      *         the same elements and each element has the same multiplicity in 
      *         both sets, false otherwise
      */
-    boolean equal(Bag<T> u);
+    public boolean equal(Bag<T> u);
 
     /**
      * Determines if one Bag is the subset of another
@@ -93,5 +101,5 @@ public interface Bag<T extends Comparable> extends Sequenceable<T>{
      *         in u and each element's multiplicity in this Bag is less than its 
      *         multiplicity in u, false otherwise
      */
-    boolean subset(Bag<T> u);
+    public boolean subset(Bag<T> u);
 }
